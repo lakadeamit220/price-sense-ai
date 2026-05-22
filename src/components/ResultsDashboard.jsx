@@ -4,7 +4,7 @@ import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
 import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download } from 'lucide-react';
 
-export default function ResultsDashboard({ results }) {
+export default function ResultsDashboard({ results, onExport }) {
   if (!results) return null;
 
   const { recommendation, status, metrics, chartData, inputs } = results;
@@ -58,6 +58,8 @@ export default function ResultsDashboard({ results }) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    if (onExport) onExport();
   };
 
   // Animation variants

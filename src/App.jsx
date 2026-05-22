@@ -9,6 +9,12 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const handleProductSelect = (product, categoryName) => {
     setSelectedProduct({ ...product, categoryName });
@@ -31,6 +37,25 @@ function App() {
       onSelectProduct={handleProductSelect} 
       selectedProductId={selectedProduct?.id}
     >
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 50, x: '-50%' }}
+            className="fixed bottom-6 left-1/2 z-[100] bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 font-semibold text-sm border border-slate-700/50 backdrop-blur-md"
+          >
+            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Form */}
@@ -38,7 +63,7 @@ function App() {
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 0.5, ease: "easeOut" }} 
-          className="lg:col-span-5 bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm h-fit"
+          className="lg:col-span-5 bg-white p-5 md:p-8 rounded-2xl border border-slate-200 shadow-sm h-fit"
         >
           <h2 className="text-xl font-bold text-slate-800 mb-6 tracking-tight">Simulation Inputs</h2>
           <InputForm 
@@ -54,7 +79,7 @@ function App() {
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }} 
-          className="lg:col-span-7 bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col min-h-[500px]"
+          className="lg:col-span-7 bg-white p-5 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col min-h-[500px]"
         >
           <h2 className="text-xl font-bold text-slate-800 mb-6 tracking-tight">Results Dashboard</h2>
           
@@ -66,7 +91,7 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
-                className="flex-1 flex flex-col items-center justify-center space-y-5"
+                className="flex-1 flex flex-col items-center justify-center space-y-5 py-12"
               >
                 <div className="relative w-16 h-16">
                   <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
@@ -81,7 +106,7 @@ function App() {
                 animate={{ opacity: 1 }}
                 className="flex-1"
               >
-                <ResultsDashboard results={results} />
+                <ResultsDashboard results={results} onExport={() => showToast("Report exported successfully!")} />
               </motion.div>
             ) : (
               <motion.div 
