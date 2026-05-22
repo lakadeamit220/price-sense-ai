@@ -2,9 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
-import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown } from 'lucide-react';
+import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown, Calendar as CalendarIcon } from 'lucide-react';
 
-export default function ResultsDashboard({ results, onExport, isDarkMode }) {
+export default function ResultsDashboard({ results, onExport, isDarkMode, onSavePromotion }) {
   if (!results) return null;
 
   const isCompare = results.isCompare;
@@ -125,13 +125,33 @@ export default function ResultsDashboard({ results, onExport, isDarkMode }) {
       className="space-y-6"
     >
       {/* Top Action Bar */}
-      <motion.div variants={itemVariant} className="flex justify-end">
+      <motion.div variants={itemVariant} className="flex justify-end gap-3">
+        {onSavePromotion && (
+          <button 
+            onClick={() => {
+              if (isCompare) {
+                // Save the winner
+                if (results.A.metrics.netIncrementalProfit > results.B.metrics.netIncrementalProfit) {
+                  onSavePromotion(results.A);
+                } else {
+                  onSavePromotion(results.B);
+                }
+              } else {
+                onSavePromotion(results);
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+          >
+            <CalendarIcon className="w-4 h-4" />
+            Schedule
+          </button>
+        )}
         <button 
           onClick={handleExportCSV}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700"
         >
           <Download className="w-4 h-4" />
-          Export to CSV
+          Export
         </button>
       </motion.div>
 

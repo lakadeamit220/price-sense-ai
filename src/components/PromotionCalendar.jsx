@@ -66,12 +66,12 @@ export default function PromotionCalendar({ promotions }) {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200 tracking-tight">
-                  {promo.product.name}
+                  {promo.inputs?.product?.name}
                 </h3>
                 <div className="flex items-center gap-3 mt-1 text-sm font-medium text-slate-500 dark:text-slate-400 flex-wrap">
                   <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-md">
                     <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
-                    {promo.product.categoryName}
+                    {promo.inputs?.product?.categoryName}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
@@ -85,7 +85,7 @@ export default function PromotionCalendar({ promotions }) {
               
               <div className="text-center bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-lg border border-indigo-100 dark:border-indigo-800 shrink-0">
                 <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-0.5">Discount</div>
-                <div className="text-xl font-black text-indigo-700 dark:text-indigo-400">{promo.discount}%</div>
+                <div className="text-xl font-black text-indigo-700 dark:text-indigo-400">{promo.inputs?.discount}%</div>
               </div>
 
               <div className="text-center px-4 py-2">
