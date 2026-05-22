@@ -47,12 +47,13 @@ When designing this prototype, the core goal was to directly answer the retailer
 To achieve this, the following features were prioritized:
 - **Dynamic Input Form**: Essential for testing different variables rapidly.
 - **A/B Testing Simulator**: Directly answers the "20% vs 25%" question by forcing the model to pick a mathematical winner.
-- **Comprehensive Metrics Grid**: Translates raw data into immediate business value (Incremental Revenue, Net Profit, ROI, Cannibalization).
+- **Comprehensive Metrics Grid**: Translates raw data into immediate, easy-to-understand business value (Total Extra Revenue, Total Extra Profit, Return on Investment, Lost Sales Elsewhere).
+- **Premium Data Visualization**: Employs an interactive, dual-axis Composed Chart with gradient revenue tracking to map margin compression cleanly.
 - **Ask AI Chat Widget**: Provides a natural language interface for users to drill down into the "Why" and "Risk" of a recommendation.
 - **Promotion Calendar**: Evolves the product from a single-use calculator into a persistent planning tool.
 
 ### Product Creation Process
-The product was created in partnership with an AI coding assistant. The process began with ideation, defining the data structures required to simulate a horizontal retail catalog (supporting specialty nuts, beverages, and grocery items). A mock engine (`mockEngine.js`) was engineered to handle non-linear elasticity and margin compression logic. Finally, the UI was constructed using modern frontend frameworks to simulate an enterprise-grade SaaS experience, focusing on micro-interactions (e.g., loading states, typing indicators) to build user trust in the AI.
+The product was created in partnership with an AI coding assistant. The process began with ideation, defining the data structures required to simulate a horizontal retail catalog (supporting specialty nuts, beverages, and grocery items). A mock engine (`mockEngine.js`) was engineered to handle non-linear elasticity and margin compression logic. Finally, the UI was constructed using modern frontend frameworks to simulate an enterprise-grade SaaS experience—featuring a "Cool Ocean Blue" color palette, frosted glass tooltips, Indian Rupee (INR) localization, and micro-interactions (e.g., loading states, typing indicators) to build user trust in the AI.
 
 ### Technical Architecture
 **Current Architecture (POC):**
