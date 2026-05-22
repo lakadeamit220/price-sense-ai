@@ -1,5 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import DiscountChart from './Charts/DiscountChart';
+import SupportingInsights from './SupportingInsights';
 import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info } from 'lucide-react';
 
 export default function ResultsDashboard({ results }) {
@@ -23,7 +25,12 @@ export default function ResultsDashboard({ results }) {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-6"
+    >
       {/* Recommendation Banner */}
       <div className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
         <div className="shrink-0 mt-1 sm:mt-0">
@@ -89,7 +96,10 @@ export default function ResultsDashboard({ results }) {
         <p className="text-sm text-slate-500 mb-2 font-medium">Comparing baseline profit against the proposed discount and adjacent alternatives.</p>
         <DiscountChart data={chartData} />
       </div>
-    </div>
+
+      {/* Supporting Insights */}
+      <SupportingInsights results={results} />
+    </motion.div>
   );
 }
 
