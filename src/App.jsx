@@ -10,6 +10,15 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  React.useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const showToast = (message) => {
     setToastMessage(message);
@@ -44,6 +53,8 @@ function App() {
     <Layout 
       onSelectProduct={handleProductSelect} 
       selectedProductId={selectedProduct?.id}
+      isDarkMode={isDarkMode}
+      setIsDarkMode={setIsDarkMode}
     >
       {/* Toast Notification */}
       <AnimatePresence>
@@ -71,9 +82,9 @@ function App() {
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 0.5, ease: "easeOut" }} 
-          className="lg:col-span-5 bg-white p-5 md:p-8 rounded-2xl border border-slate-200 shadow-sm h-fit"
+          className="lg:col-span-5 bg-white dark:bg-slate-800 p-5 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm h-fit transition-colors duration-300"
         >
-          <h2 className="text-xl font-bold text-slate-800 mb-6 tracking-tight">Simulation Inputs</h2>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 tracking-tight">Simulation Inputs</h2>
           <InputForm 
             selectedProductId={selectedProduct?.id} 
             onProductSelect={handleProductSelect}
@@ -87,9 +98,9 @@ function App() {
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }} 
-          className="lg:col-span-7 bg-white p-5 md:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col min-h-[500px]"
+          className="lg:col-span-7 bg-white dark:bg-slate-800 p-5 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col min-h-[500px] transition-colors duration-300"
         >
-          <h2 className="text-xl font-bold text-slate-800 mb-6 tracking-tight">Results Dashboard</h2>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 tracking-tight">Results Dashboard</h2>
           
           <AnimatePresence mode="wait">
             {isLoading ? (
@@ -102,10 +113,10 @@ function App() {
                 className="flex-1 flex flex-col items-center justify-center space-y-5 py-12"
               >
                 <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-slate-700"></div>
                   <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
                 </div>
-                <p className="text-slate-500 font-semibold animate-pulse tracking-wide">Analyzing historical performance...</p>
+                <p className="text-slate-500 dark:text-slate-400 font-semibold animate-pulse tracking-wide">Analyzing historical performance...</p>
               </motion.div>
             ) : results ? (
               <motion.div 
@@ -114,25 +125,28 @@ function App() {
                 animate={{ opacity: 1 }}
                 className="flex-1"
               >
-                <ResultsDashboard results={results} onExport={() => showToast("Report exported successfully!")} />
+                <ResultsDashboard 
+                  results={results} 
+                  onExport={() => showToast("Report exported successfully!")} 
+                  isDarkMode={isDarkMode}
+                />
               </motion.div>
             ) : (
               <motion.div 
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex-1 flex items-center justify-center"
+                className="flex-1 flex flex-col items-center justify-center text-center px-4 py-12"
               >
-                <div className="text-center max-w-sm">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
-                    <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <p className="text-slate-500 font-medium leading-relaxed">
-                    Configure your promotion parameters on the left and run the simulation to see AI recommendations.
-                  </p>
+                <div className="w-16 h-16 bg-slate-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
                 </div>
+                <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mb-2">No Simulation Active</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
+                  Select a product from the catalog and configure your discount parameters to generate an AI recommendation.
+                </p>
               </motion.div>
             )}
           </AnimatePresence>

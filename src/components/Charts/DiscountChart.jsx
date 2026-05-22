@@ -1,37 +1,48 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-export default function DiscountChart({ data }) {
-  // Format currency for tooltip
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
-  };
+export default function DiscountChart({ data, isCompare, isDarkMode }) {
+  if (!data || data.length === 0) return null;
+
+  const formatCurrency = (val) => `$${val.toLocaleString()}`;
+  
+  // Theme-aware colors
+  const gridColor = isDarkMode ? '#334155' : '#f1f5f9'; // slate-700 : slate-100
+  const textColor = isDarkMode ? '#94a3b8' : '#64748b'; // slate-400 : slate-500
+  const tooltipBg = isDarkMode ? '#1e293b' : '#ffffff'; // slate-800 : white
+  const tooltipBorder = isDarkMode ? '#334155' : '#e2e8f0'; // slate-700 : slate-200
+  const tooltipText = isDarkMode ? '#f8fafc' : '#0f172a'; // slate-50 : slate-900
 
   return (
     <div className="h-64 w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+        <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
           <XAxis 
             dataKey="name" 
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }}
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fill: textColor, fontSize: 12, fontWeight: 500 }} 
             dy={10}
           />
           <YAxis 
-            tickFormatter={(value) => `$${value}`} 
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }}
+            tickFormatter={formatCurrency} 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fill: textColor, fontSize: 12, fontWeight: 500 }}
+            dx={-10}
           />
           <Tooltip 
-            cursor={{ fill: '#f1f5f9' }}
-            formatter={(value) => [formatCurrency(value), 'Simulated Profit']}
-            contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontWeight: 500 }}
+            formatter={(value) => [formatCurrency(value), 'Profit']}
+            cursor={{ fill: isDarkMode ? '#334155' : '#f8fafc' }}
+            contentStyle={{ 
+              borderRadius: '8px', 
+              border: `1px solid ${tooltipBorder}`, 
+              backgroundColor: tooltipBg,
+              color: tooltipText,
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', 
+              fontWeight: 500 
+            }}
           />
           <Bar dataKey="profit" radius={[6, 6, 0, 0]} maxBarSize={60}>
             {data.map((entry, index) => {

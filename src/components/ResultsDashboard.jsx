@@ -4,7 +4,7 @@ import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
 import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown } from 'lucide-react';
 
-export default function ResultsDashboard({ results, onExport }) {
+export default function ResultsDashboard({ results, onExport, isDarkMode }) {
   if (!results) return null;
 
   const isCompare = results.isCompare;
@@ -18,15 +18,15 @@ export default function ResultsDashboard({ results, onExport }) {
 
   // Status mapping
   const statusStyles = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-    danger: 'bg-red-50 border-red-200 text-red-800'
+    success: 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-800 dark:text-green-300',
+    warning: 'bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20 text-yellow-800 dark:text-yellow-300',
+    danger: 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-800 dark:text-red-300'
   };
 
   const statusIcons = {
-    success: <ShieldCheck className="w-8 h-8 text-green-600" />,
-    warning: <AlertTriangle className="w-8 h-8 text-yellow-600" />,
-    danger: <AlertTriangle className="w-8 h-8 text-red-600" />
+    success: <ShieldCheck className="w-8 h-8 text-green-600 dark:text-green-400" />,
+    warning: <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />,
+    danger: <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
   };
 
   const handleExportCSV = () => {
@@ -128,7 +128,7 @@ export default function ResultsDashboard({ results, onExport }) {
       <motion.div variants={itemVariant} className="flex justify-end">
         <button 
           onClick={handleExportCSV}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-200"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-700"
         >
           <Download className="w-4 h-4" />
           Export to CSV
@@ -137,9 +137,9 @@ export default function ResultsDashboard({ results, onExport }) {
 
       {/* Recommendation Banner */}
       {isCompare ? (
-        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 bg-indigo-50 border-indigo-200 text-indigo-900`}>
+        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800/50 text-indigo-900 dark:text-indigo-200`}>
           <div className="shrink-0 mt-1 sm:mt-0">
-            <Crown className="w-8 h-8 text-indigo-600" />
+            <Crown className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
           </div>
           <div>
             <h3 className="font-bold text-lg sm:text-xl tracking-tight">A/B Test Result: {winnerText}</h3>
@@ -223,13 +223,13 @@ export default function ResultsDashboard({ results, onExport }) {
       </motion.div>
 
       {/* Chart Section */}
-      <motion.div variants={itemVariant} className="pt-6 border-t border-slate-200">
-        <h3 className="font-bold text-slate-800 tracking-tight">Profitability Scenario Analysis</h3>
-        <p className="text-sm text-slate-500 mb-2 font-medium">Comparing baseline profit against the proposed discount scenarios.</p>
-        <DiscountChart data={finalChartData} isCompare={isCompare} />
+      <motion.div variants={itemVariant} className="pt-6 border-t border-slate-200 dark:border-slate-700">
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 tracking-tight">Profitability Scenario Analysis</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2 font-medium">Comparing baseline profit against the proposed discount scenarios.</p>
+        <DiscountChart data={finalChartData} isCompare={isCompare} isDarkMode={isDarkMode} />
       </motion.div>
 
-      {/* Supporting Insights (Only show for single mode to keep UI clean, or pass Winner) */}
+      {/* Supporting Insights */}
       {!isCompare && (
         <motion.div variants={itemVariant}>
           <SupportingInsights results={mainData} />
@@ -240,14 +240,14 @@ export default function ResultsDashboard({ results, onExport }) {
 }
 
 function MetricCard({ title, value, icon, trend, isCompare, valueB, trendB, labelA = "Scenario A", labelB = "Scenario B" }) {
-  const getTrendColor = (t) => t === 'up' ? 'text-green-600' : t === 'down' ? 'text-red-500' : 'text-slate-600';
+  const getTrendColor = (t) => t === 'up' ? 'text-green-600 dark:text-green-400' : t === 'down' ? 'text-red-500 dark:text-red-400' : 'text-slate-600 dark:text-slate-300';
   
   return (
     <motion.div 
       whileHover={{ y: -4, boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)' }}
-      className="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm transition-colors duration-300"
+      className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300"
     >
-      <div className="flex items-center gap-2 text-slate-500 mb-3">
+      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-3">
         {icon}
         <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
       </div>
@@ -255,11 +255,11 @@ function MetricCard({ title, value, icon, trend, isCompare, valueB, trendB, labe
       {isCompare ? (
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <div className="text-[10px] text-slate-400 font-bold mb-0.5 uppercase tracking-wide">{labelA}</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mb-0.5 uppercase tracking-wide">{labelA}</div>
             <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trend)}`}>{value}</div>
           </div>
-          <div className="border-l border-slate-200 pl-2">
-            <div className="text-[10px] text-indigo-400 font-bold mb-0.5 uppercase tracking-wide">{labelB}</div>
+          <div className="border-l border-slate-200 dark:border-slate-700 pl-2">
+            <div className="text-[10px] text-indigo-400 dark:text-indigo-500 font-bold mb-0.5 uppercase tracking-wide">{labelB}</div>
             <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trendB)}`}>{valueB}</div>
           </div>
         </div>
