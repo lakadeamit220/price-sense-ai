@@ -20,14 +20,22 @@ function App() {
     setSelectedProduct({ ...product, categoryName });
   };
 
-  const handleSimulate = (product, discount, duration) => {
+  const handleSimulate = (product, duration, discountA, discountB) => {
     setIsLoading(true);
     setResults(null); // Clear previous results to trigger re-animation
     
     setTimeout(() => {
-      const recommendation = calculateRecommendation(product, discount, duration);
-      recommendation.inputs = { product, discount, duration };
-      setResults(recommendation);
+      const recA = calculateRecommendation(product, discountA, duration);
+      recA.inputs = { product, discount: discountA, duration };
+      
+      if (discountB !== undefined) {
+        const recB = calculateRecommendation(product, discountB, duration);
+        recB.inputs = { product, discount: discountB, duration };
+        setResults({ isCompare: true, A: recA, B: recB });
+      } else {
+        setResults({ isCompare: false, ...recA });
+      }
+      
       setIsLoading(false);
     }, 1500);
   };

@@ -2,12 +2,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
-import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download } from 'lucide-react';
+import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown } from 'lucide-react';
 
 export default function ResultsDashboard({ results, onExport }) {
   if (!results) return null;
 
-  const { recommendation, status, metrics, chartData, inputs } = results;
+  const isCompare = results.isCompare;
+  
+  // Extract primary data
+  const mainData = isCompare ? results.A : results;
+  const secondaryData = isCompare ? results.B : null;
+  const { recommendation, status, metrics, chartData, inputs } = mainData;
 
   const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
@@ -28,33 +33,42 @@ export default function ResultsDashboard({ results, onExport }) {
     if (!inputs) return;
     
     const headers = [
-      "Product Name", "Category", "Discount (%)", "Duration (Days)", 
+      "Scenario", "Product Name", "Category", "Discount (%)", "Duration (Days)", 
       "AI Recommendation", "Net Incremental Profit ($)", "Projected Lift (%)", 
       "Cannibalization Impact ($)", "Gross Incremental Revenue ($)", "Expected ROI (%)", "Confidence Score (%)"
     ];
     
-    const row = [
-      `"${inputs.product.name}"`,
-      `"${inputs.product.categoryName}"`,
-      inputs.discount,
-      inputs.duration,
-      `"${recommendation}"`,
-      metrics.netIncrementalProfit,
-      metrics.liftPercentage,
-      metrics.cannibalizationImpact,
-      metrics.incrementalRevenue,
-      metrics.roi,
-      metrics.confidenceScore
+    const makeRow = (name, d) => [
+      name,
+      `"${d.inputs.product.name}"`,
+      `"${d.inputs.product.categoryName}"`,
+      d.inputs.discount,
+      d.inputs.duration,
+      `"${d.recommendation}"`,
+      d.metrics.netIncrementalProfit,
+      d.metrics.liftPercentage,
+      d.metrics.cannibalizationImpact,
+      d.metrics.incrementalRevenue,
+      d.metrics.roi,
+      d.metrics.confidenceScore
     ];
+
+    let rows = [];
+    if (isCompare) {
+      rows.push(makeRow("Scenario A", results.A));
+      rows.push(makeRow("Scenario B", results.B));
+    } else {
+      rows.push(makeRow("Primary", results));
+    }
     
     const csvContent = "data:text/csv;charset=utf-8," 
       + headers.join(",") + "\n" 
-      + row.join(",");
+      + rows.map(r => r.join(",")).join("\n");
       
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `PriceSense_Scenario_${inputs.product.name.replace(/\s+/g, '_')}_${inputs.discount}pct.csv`);
+    link.setAttribute("download", `PriceSense_Report.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -81,6 +95,28 @@ export default function ResultsDashboard({ results, onExport }) {
     }
   };
 
+  // Build Compare Chart Data
+  let finalChartData = chartData;
+  if (isCompare) {
+    finalChartData = [
+      { name: 'Baseline (0%)', profit: results.A.chartData[0].profit },
+      { name: `A (${results.A.inputs.discount}%)`, profit: results.A.chartData[2].profit },
+      { name: `B (${results.B.inputs.discount}%)`, profit: results.B.chartData[2].profit },
+    ];
+  }
+
+  // Determine Winner in Compare Mode
+  let winnerText = "";
+  if (isCompare) {
+    if (results.A.metrics.netIncrementalProfit > results.B.metrics.netIncrementalProfit) {
+      winnerText = `Scenario A (${results.A.inputs.discount}%) yields higher profitability.`;
+    } else if (results.B.metrics.netIncrementalProfit > results.A.metrics.netIncrementalProfit) {
+      winnerText = `Scenario B (${results.B.inputs.discount}%) yields higher profitability.`;
+    } else {
+      winnerText = "Both scenarios yield similar profitability.";
+    }
+  }
+
   return (
     <motion.div 
       variants={containerVariant}
@@ -100,81 +136,111 @@ export default function ResultsDashboard({ results, onExport }) {
       </motion.div>
 
       {/* Recommendation Banner */}
-      <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
-        <div className="shrink-0 mt-1 sm:mt-0">
-          {statusIcons[status]}
-        </div>
-        <div>
-          <h3 className="font-bold text-lg sm:text-xl tracking-tight">AI Recommendation: {recommendation}</h3>
-          <p className="text-sm opacity-90 mt-1 font-medium leading-relaxed">
-            Based on historical category elasticity, margin compression, and modeled cannibalization impact.
-          </p>
-        </div>
-      </motion.div>
+      {isCompare ? (
+        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 bg-indigo-50 border-indigo-200 text-indigo-900`}>
+          <div className="shrink-0 mt-1 sm:mt-0">
+            <Crown className="w-8 h-8 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg sm:text-xl tracking-tight">A/B Test Result: {winnerText}</h3>
+            <p className="text-sm opacity-90 mt-1 font-medium leading-relaxed">
+              Compare the metrics below to understand the tradeoff between volume lift and margin compression.
+            </p>
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
+          <div className="shrink-0 mt-1 sm:mt-0">
+            {statusIcons[status]}
+          </div>
+          <div>
+            <h3 className="font-bold text-lg sm:text-xl tracking-tight">AI Recommendation: {recommendation}</h3>
+            <p className="text-sm opacity-90 mt-1 font-medium leading-relaxed">
+              Based on historical category elasticity, margin compression, and modeled cannibalization impact.
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Key Metrics Grid */}
       <motion.div variants={itemVariant} className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <MetricCard 
           title="Net Incr. Profit" 
           value={formatCurrency(metrics.netIncrementalProfit)} 
-          subtitle="After cannibalization"
-          icon={<DollarSign className="w-4 h-4" />}
           trend={metrics.netIncrementalProfit > 0 ? 'up' : 'down'}
+          icon={<DollarSign className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? formatCurrency(results.B.metrics.netIncrementalProfit) : null}
+          trendB={isCompare ? (results.B.metrics.netIncrementalProfit > 0 ? 'up' : 'down') : null}
+          labelA={`Scenario A`}
+          labelB={`Scenario B`}
         />
         <MetricCard 
           title="Projected Lift" 
           value={`+${metrics.liftPercentage}%`} 
-          subtitle="Volume increase"
-          icon={<TrendingUp className="w-4 h-4" />}
           trend="up"
+          icon={<TrendingUp className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? `+${results.B.metrics.liftPercentage}%` : null}
+          trendB="up"
         />
         <MetricCard 
           title="Cannibalization" 
           value={formatCurrency(metrics.cannibalizationImpact)} 
-          subtitle="Impact on sibling SKUs"
-          icon={<PieChart className="w-4 h-4" />}
           trend="down"
+          icon={<PieChart className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? formatCurrency(results.B.metrics.cannibalizationImpact) : null}
+          trendB="down"
         />
         <MetricCard 
           title="Gross Incr. Rev" 
           value={`+${formatCurrency(metrics.incrementalRevenue)}`} 
-          subtitle="Incremental revenue"
-          icon={<Activity className="w-4 h-4" />}
           trend="up"
+          icon={<Activity className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? `+${formatCurrency(results.B.metrics.incrementalRevenue)}` : null}
+          trendB="up"
         />
         <MetricCard 
           title="Expected ROI" 
           value={`${metrics.roi}%`} 
-          subtitle="Return on investment"
-          icon={<TrendingUp className="w-4 h-4" />}
           trend={metrics.roi > 0 ? 'up' : 'down'}
+          icon={<TrendingUp className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? `${results.B.metrics.roi}%` : null}
+          trendB={isCompare ? (results.B.metrics.roi > 0 ? 'up' : 'down') : null}
         />
         <MetricCard 
           title="AI Confidence" 
           value={`${metrics.confidenceScore}%`} 
-          subtitle="Model certainty"
-          icon={<Info className="w-4 h-4" />}
           trend={metrics.confidenceScore > 80 ? 'up' : 'neutral'}
+          icon={<Info className="w-4 h-4" />}
+          isCompare={isCompare}
+          valueB={isCompare ? `${results.B.metrics.confidenceScore}%` : null}
+          trendB={isCompare ? (results.B.metrics.confidenceScore > 80 ? 'up' : 'neutral') : null}
         />
       </motion.div>
 
       {/* Chart Section */}
       <motion.div variants={itemVariant} className="pt-6 border-t border-slate-200">
         <h3 className="font-bold text-slate-800 tracking-tight">Profitability Scenario Analysis</h3>
-        <p className="text-sm text-slate-500 mb-2 font-medium">Comparing baseline profit against the proposed discount and adjacent alternatives.</p>
-        <DiscountChart data={chartData} />
+        <p className="text-sm text-slate-500 mb-2 font-medium">Comparing baseline profit against the proposed discount scenarios.</p>
+        <DiscountChart data={finalChartData} isCompare={isCompare} />
       </motion.div>
 
-      {/* Supporting Insights */}
-      <motion.div variants={itemVariant}>
-        <SupportingInsights results={results} />
-      </motion.div>
+      {/* Supporting Insights (Only show for single mode to keep UI clean, or pass Winner) */}
+      {!isCompare && (
+        <motion.div variants={itemVariant}>
+          <SupportingInsights results={mainData} />
+        </motion.div>
+      )}
     </motion.div>
   );
 }
 
-function MetricCard({ title, value, subtitle, icon, trend }) {
-  const trendColor = trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-500' : 'text-slate-600';
+function MetricCard({ title, value, icon, trend, isCompare, valueB, trendB, labelA = "Scenario A", labelB = "Scenario B" }) {
+  const getTrendColor = (t) => t === 'up' ? 'text-green-600' : t === 'down' ? 'text-red-500' : 'text-slate-600';
   
   return (
     <motion.div 
@@ -185,12 +251,23 @@ function MetricCard({ title, value, subtitle, icon, trend }) {
         {icon}
         <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
       </div>
-      <div className={`text-2xl font-black tracking-tight ${trendColor}`}>
-        {value}
-      </div>
-      <div className="text-xs font-medium text-slate-500 mt-1">
-        {subtitle}
-      </div>
+      
+      {isCompare ? (
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <div className="text-[10px] text-slate-400 font-bold mb-0.5 uppercase tracking-wide">{labelA}</div>
+            <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trend)}`}>{value}</div>
+          </div>
+          <div className="border-l border-slate-200 pl-2">
+            <div className="text-[10px] text-indigo-400 font-bold mb-0.5 uppercase tracking-wide">{labelB}</div>
+            <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trendB)}`}>{valueB}</div>
+          </div>
+        </div>
+      ) : (
+        <div className={`text-2xl font-black tracking-tight ${getTrendColor(trend)}`}>
+          {value}
+        </div>
+      )}
     </motion.div>
   );
 }
