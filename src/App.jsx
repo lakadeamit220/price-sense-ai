@@ -18,9 +18,9 @@ function App() {
     setIsLoading(true);
     setResults(null); // Clear previous results to trigger re-animation
     
-    // Simulate AI processing time for better UX
     setTimeout(() => {
       const recommendation = calculateRecommendation(product, discount, duration);
+      recommendation.inputs = { product, discount, duration };
       setResults(recommendation);
       setIsLoading(false);
     }, 1500);

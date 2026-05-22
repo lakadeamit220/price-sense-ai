@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
-import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info } from 'lucide-react';
+import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download } from 'lucide-react';
 
 export default function ResultsDashboard({ results }) {
   if (!results) return null;
 
-  const { recommendation, status, metrics, chartData } = results;
+  const { recommendation, status, metrics, chartData, inputs } = results;
 
   const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
@@ -22,6 +22,42 @@ export default function ResultsDashboard({ results }) {
     success: <ShieldCheck className="w-8 h-8 text-green-600" />,
     warning: <AlertTriangle className="w-8 h-8 text-yellow-600" />,
     danger: <AlertTriangle className="w-8 h-8 text-red-600" />
+  };
+
+  const handleExportCSV = () => {
+    if (!inputs) return;
+    
+    const headers = [
+      "Product Name", "Category", "Discount (%)", "Duration (Days)", 
+      "AI Recommendation", "Net Incremental Profit ($)", "Projected Lift (%)", 
+      "Cannibalization Impact ($)", "Gross Incremental Revenue ($)", "Expected ROI (%)", "Confidence Score (%)"
+    ];
+    
+    const row = [
+      `"${inputs.product.name}"`,
+      `"${inputs.product.categoryName}"`,
+      inputs.discount,
+      inputs.duration,
+      `"${recommendation}"`,
+      metrics.netIncrementalProfit,
+      metrics.liftPercentage,
+      metrics.cannibalizationImpact,
+      metrics.incrementalRevenue,
+      metrics.roi,
+      metrics.confidenceScore
+    ];
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n" 
+      + row.join(",");
+      
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `PriceSense_Scenario_${inputs.product.name.replace(/\s+/g, '_')}_${inputs.discount}pct.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Animation variants
@@ -50,6 +86,17 @@ export default function ResultsDashboard({ results }) {
       animate="show"
       className="space-y-6"
     >
+      {/* Top Action Bar */}
+      <motion.div variants={itemVariant} className="flex justify-end">
+        <button 
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-200"
+        >
+          <Download className="w-4 h-4" />
+          Export to CSV
+        </button>
+      </motion.div>
+
       {/* Recommendation Banner */}
       <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
         <div className="shrink-0 mt-1 sm:mt-0">
