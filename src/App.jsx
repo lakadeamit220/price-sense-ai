@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import InputForm from './components/InputForm';
 import ResultsDashboard from './components/ResultsDashboard';
 import PromotionCalendar from './components/PromotionCalendar';
+import ChatWidget from './components/ChatWidget';
 import { calculateRecommendation } from './utils/mockEngine';
 
 function App() {
@@ -219,6 +220,9 @@ function App() {
           </div>
         )}
       </Layout>
+
+      {/* Floating Ask AI Widget */}
+      <ChatWidget results={results} />
     </>
   );
 }
