@@ -1,19 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Layout from './components/Layout';
 
 function App() {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleProductSelect = (product, categoryName) => {
+    setSelectedProduct({ ...product, categoryName });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-primary-600 tracking-tight">Price Sense AI</h1>
-        <p className="mt-4 text-lg text-slate-600 max-w-xl">
-          AI-powered promotion recommendations for mid-market retailers. Stop guessing, start maximizing your ROI.
-        </p>
+    <Layout 
+      onSelectProduct={handleProductSelect} 
+      selectedProductId={selectedProduct?.id}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left Column: Form */}
+        <div className="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-800 mb-6">Simulation Inputs</h2>
+          {selectedProduct ? (
+            <p className="text-slate-600">Selected Product: <span className="font-semibold">{selectedProduct.name}</span></p>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-slate-500 italic">Select a product from the sidebar catalog to begin.</p>
+            </div>
+          )}
+          {/* Phase 4: InputForm will go here */}
+        </div>
+        
+        {/* Right Column: Dashboard */}
+        <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <h2 className="text-lg font-bold text-slate-800 mb-6">Results Dashboard</h2>
+          <div className="flex-1 flex items-center justify-center min-h-[300px]">
+            <p className="text-slate-500 italic text-center max-w-sm">
+              AI recommendations and business metrics will appear here once you run a simulation.
+            </p>
+          </div>
+          {/* Phase 5: ResultsDashboard will go here */}
+        </div>
+        
       </div>
-      <div className="mt-8 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-        <p className="text-slate-500 font-medium">Phase 1: Foundation successfully set up!</p>
-      </div>
-    </div>
+    </Layout>
   )
 }
 
-export default App
+export default App;
