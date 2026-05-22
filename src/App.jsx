@@ -49,10 +49,10 @@ function App() {
       <AnimatePresence>
         {toastMessage && (
           <motion.div 
-            initial={{ opacity: 0, y: 50, x: '-50%' }}
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: 50, x: '-50%' }}
-            className="fixed bottom-6 left-1/2 z-[100] bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 font-semibold text-sm border border-slate-700/50 backdrop-blur-md"
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed top-24 left-1/2 z-[100] bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 font-semibold text-sm border border-slate-700/50 backdrop-blur-md"
           >
             <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
               <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
