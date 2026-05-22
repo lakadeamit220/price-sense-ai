@@ -11,6 +11,7 @@ function App() {
   const [results, setResults] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const toastTimeoutRef = React.useRef(null);
 
   React.useEffect(() => {
     if (isDarkMode) {
@@ -22,7 +23,8 @@ function App() {
 
   const showToast = (message) => {
     setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => setToastMessage(null), 3000);
   };
 
   const handleProductSelect = (product, categoryName) => {
@@ -50,12 +52,7 @@ function App() {
   };
 
   return (
-    <Layout 
-      onSelectProduct={handleProductSelect} 
-      selectedProductId={selectedProduct?.id}
-      isDarkMode={isDarkMode}
-      setIsDarkMode={setIsDarkMode}
-    >
+    <>
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -63,7 +60,7 @@ function App() {
             initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-24 left-1/2 z-[100] bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 font-semibold text-sm border border-slate-700/50 backdrop-blur-md"
+            className="fixed top-24 left-1/2 z-[9999] bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 font-semibold text-sm border border-slate-700/50 backdrop-blur-md"
           >
             <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
               <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -74,6 +71,13 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Layout 
+        onSelectProduct={handleProductSelect} 
+        selectedProductId={selectedProduct?.id}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      >
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
@@ -153,8 +157,9 @@ function App() {
         </motion.div>
         
       </div>
-    </Layout>
-  )
+      </Layout>
+    </>
+  );
 }
 
 export default App;
