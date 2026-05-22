@@ -1,0 +1,128 @@
+import React, { useState } from 'react';
+import { getAllProducts } from '../data/catalog';
+import { Search } from 'lucide-react';
+
+export default function InputForm({ selectedProductId, onProductSelect, onSimulate, isLoading }) {
+  const products = getAllProducts();
+  const [discount, setDiscount] = useState(20);
+  const [duration, setDuration] = useState(7); // days
+  
+  const handleProductChange = (e) => {
+    const prod = products.find(p => p.id === e.target.value);
+    if (prod) {
+      onProductSelect(prod, prod.categoryName);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedProductId) return;
+    const prod = products.find(p => p.id === selectedProductId);
+    onSimulate(prod, discount, duration);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-7">
+      {/* Product Selection */}
+      <div className="space-y-2.5">
+        <label className="block text-sm font-bold text-slate-700">Target Product</label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-slate-400" />
+          </div>
+          <select 
+            value={selectedProductId || ""} 
+            onChange={handleProductChange}
+            className="block w-full pl-11 pr-10 py-3 text-sm border-slate-300 rounded-xl focus:ring-primary-500 focus:border-primary-500 bg-slate-50 border outline-none transition-all shadow-sm font-medium text-slate-700"
+            required
+          >
+            <option value="" disabled>Select a product to test...</option>
+            {products.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.categoryName} - {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Discount Slider */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <label className="block text-sm font-bold text-slate-700">Discount Depth</label>
+          <div className="relative w-24">
+            <input 
+              type="number" 
+              min="5" 
+              max="70" 
+              value={discount}
+              onChange={(e) => setDiscount(Number(e.target.value))}
+              className="block w-full pr-7 py-1.5 text-sm font-semibold text-right border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 border bg-slate-50 outline-none shadow-sm"
+            />
+            <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+              <span className="text-slate-500 text-sm font-medium">%</span>
+            </div>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          min="5" 
+          max="70" 
+          step="5"
+          value={discount}
+          onChange={(e) => setDiscount(Number(e.target.value))}
+          className="w-full h-2.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        />
+        <div className="flex justify-between text-xs text-slate-400 font-semibold px-1">
+          <span>5%</span>
+          <span>70%</span>
+        </div>
+      </div>
+
+      {/* Duration */}
+      <div className="space-y-3">
+        <label className="block text-sm font-bold text-slate-700">Promotion Period</label>
+        <div className="grid grid-cols-3 gap-3">
+          {[3, 7, 14].map(days => (
+            <button
+              key={days}
+              type="button"
+              onClick={() => setDuration(days)}
+              className={`py-2.5 px-3 rounded-xl text-sm font-semibold border transition-all ${
+                duration === days 
+                  ? 'bg-primary-50 border-primary-500 text-primary-700 shadow-sm' 
+                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+              }`}
+            >
+              {days} Days
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-2">
+        <button 
+          type="submit" 
+          disabled={!selectedProductId || isLoading}
+          className={`w-full py-3.5 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+            !selectedProductId 
+              ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+              : 'bg-primary-600 hover:bg-primary-700 text-white shadow-primary-500/30 shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-primary-600'
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Running Simulation...
+            </>
+          ) : (
+            'Get AI Recommendation'
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}
