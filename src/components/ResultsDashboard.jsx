@@ -16,11 +16,10 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
 
   const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
-  // Status mapping
   const statusStyles = {
-    success: 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-800 dark:text-green-300',
-    warning: 'bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20 text-yellow-800 dark:text-yellow-300',
-    danger: 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-800 dark:text-red-300'
+    success: 'bg-gradient-to-r from-green-50 to-emerald-50/50 dark:from-green-500/10 dark:to-emerald-500/5 border-green-200/80 dark:border-green-500/20 text-green-900 dark:text-green-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]',
+    warning: 'bg-gradient-to-r from-yellow-50 to-orange-50/50 dark:from-yellow-500/10 dark:to-orange-500/5 border-yellow-200/80 dark:border-yellow-500/20 text-yellow-900 dark:text-yellow-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]',
+    danger: 'bg-gradient-to-r from-red-50 to-rose-50/50 dark:from-red-500/10 dark:to-rose-500/5 border-red-200/80 dark:border-red-500/20 text-red-900 dark:text-red-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
   };
 
   const statusIcons = {
@@ -140,7 +139,7 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
                 onSavePromotion(results);
               }
             }}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
           >
             <CalendarIcon className="w-4 h-4" />
             Schedule
@@ -157,9 +156,9 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
 
       {/* Recommendation Banner */}
       {isCompare ? (
-        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800/50 text-indigo-900 dark:text-indigo-200`}>
+        <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 bg-gradient-to-r from-primary-50 to-blue-50/50 dark:from-primary-500/10 dark:to-blue-500/5 border-primary-200/80 dark:border-primary-800/50 text-primary-900 dark:text-primary-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]`}>
           <div className="shrink-0 mt-1 sm:mt-0">
-            <Crown className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+            <Crown className="w-8 h-8 text-primary-600 dark:text-primary-400" />
           </div>
           <div>
             <h3 className="font-bold text-lg sm:text-xl tracking-tight">A/B Test Result: {winnerText}</h3>
@@ -264,30 +263,36 @@ function MetricCard({ title, value, icon, trend, isCompare, valueB, trendB, labe
   
   return (
     <motion.div 
-      whileHover={{ y: -4, boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)' }}
-      className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300"
+      whileHover={{ y: -4, boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.01)' }}
+      className="relative overflow-hidden bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm transition-all duration-300 group"
     >
-      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-3">
-        {icon}
-        <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
+      <div className="absolute inset-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative z-10 flex items-center justify-between mb-4">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{title}</span>
+        <div className="p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg text-slate-400 dark:text-slate-500 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+          {icon}
+        </div>
       </div>
       
-      {isCompare ? (
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mb-0.5 uppercase tracking-wide">{labelA}</div>
-            <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trend)}`}>{value}</div>
+      <div className="relative z-10">
+        {isCompare ? (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mb-1 uppercase tracking-wider">{labelA}</div>
+              <div className={`text-xl sm:text-2xl font-black tracking-tight ${getTrendColor(trend)} drop-shadow-sm`}>{value}</div>
+            </div>
+            <div className="border-l border-slate-100 dark:border-slate-700/50 pl-3">
+              <div className="text-[10px] text-primary-400 dark:text-primary-500 font-bold mb-1 uppercase tracking-wider">{labelB}</div>
+              <div className={`text-xl sm:text-2xl font-black tracking-tight ${getTrendColor(trendB)} drop-shadow-sm`}>{valueB}</div>
+            </div>
           </div>
-          <div className="border-l border-slate-200 dark:border-slate-700 pl-2">
-            <div className="text-[10px] text-indigo-400 dark:text-indigo-500 font-bold mb-0.5 uppercase tracking-wide">{labelB}</div>
-            <div className={`text-lg sm:text-xl font-black tracking-tight ${getTrendColor(trendB)}`}>{valueB}</div>
+        ) : (
+          <div className={`text-3xl font-black tracking-tighter ${getTrendColor(trend)} drop-shadow-sm`}>
+            {value}
           </div>
-        </div>
-      ) : (
-        <div className={`text-2xl font-black tracking-tight ${getTrendColor(trend)}`}>
-          {value}
-        </div>
-      )}
+        )}
+      </div>
     </motion.div>
   );
 }

@@ -75,21 +75,21 @@ export default function ChatWidget({ results }) {
             className="mb-4 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-[450px]"
           >
             {/* Header */}
-            <div className="bg-indigo-600 dark:bg-indigo-900 px-4 py-3 flex items-center justify-between shadow-sm">
+            <div className="bg-primary-600 dark:bg-primary-900 px-4 py-3 flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-sm">Ask Price Sense AI</h3>
-                  <p className="text-indigo-200 text-xs font-medium flex items-center gap-1">
+                  <p className="text-primary-200 text-xs font-medium flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span> Online
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-indigo-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
+                className="p-1.5 text-primary-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -100,7 +100,7 @@ export default function ChatWidget({ results }) {
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-1 ${msg.sender === 'user' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300' : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400'}`}>
+                    <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-1 ${msg.sender === 'user' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300' : 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-400'}`}>
                       {msg.sender === 'user' ? <User className="w-4 h-4" /> : <BrainCircuit className="w-4 h-4" />}
                     </div>
                     <div className={`p-3 rounded-2xl text-sm leading-relaxed ${
@@ -118,8 +118,8 @@ export default function ChatWidget({ results }) {
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="flex gap-2 max-w-[85%]">
-                    <div className="shrink-0 w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mt-1">
-                      <BrainCircuit className="w-4 h-4 text-indigo-700 dark:text-indigo-400" />
+                    <div className="shrink-0 w-7 h-7 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mt-1">
+                      <BrainCircuit className="w-4 h-4 text-primary-700 dark:text-primary-400" />
                     </div>
                     <div className="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
                       <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0 }} className="w-2 h-2 bg-slate-400 rounded-full" />
@@ -140,12 +140,12 @@ export default function ChatWidget({ results }) {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Ask about this simulation..."
-                  className="w-full pl-4 pr-12 py-2.5 bg-slate-100 dark:bg-slate-900 border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-0 rounded-xl text-sm text-slate-800 dark:text-slate-100 transition-colors placeholder:text-slate-500"
+                  className="w-full pl-4 pr-12 py-2.5 bg-slate-100 dark:bg-slate-900 border-transparent focus:border-primary-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-0 rounded-xl text-sm text-slate-800 dark:text-slate-100 transition-colors placeholder:text-slate-500"
                 />
                 <button
                   type="submit"
                   disabled={!inputValue.trim() || isTyping}
-                  className="absolute right-2 p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+                  className="absolute right-2 p-1.5 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/50 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -160,7 +160,7 @@ export default function ChatWidget({ results }) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-indigo-500/30 transition-colors"
+        className="w-14 h-14 bg-primary-600 hover:bg-primary-700 text-white rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-primary-500/30 transition-colors"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (

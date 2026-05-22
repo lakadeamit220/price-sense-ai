@@ -83,9 +83,9 @@ export default function PromotionCalendar({ promotions }) {
 
             <div className="flex flex-wrap md:flex-nowrap gap-3 md:gap-6 items-center border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 pt-4 md:pt-0 md:pl-6">
               
-              <div className="text-center bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-lg border border-indigo-100 dark:border-indigo-800 shrink-0">
-                <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-0.5">Discount</div>
-                <div className="text-xl font-black text-indigo-700 dark:text-indigo-400">{promo.inputs?.discount}%</div>
+              <div className="text-center bg-primary-50 dark:bg-primary-900/30 px-4 py-2 rounded-lg border border-primary-100 dark:border-primary-800 shrink-0">
+                <div className="text-[10px] font-bold text-primary-500 uppercase tracking-wider mb-0.5">Discount</div>
+                <div className="text-xl font-black text-primary-700 dark:text-primary-400">{promo.inputs?.discount}%</div>
               </div>
 
               <div className="text-center px-4 py-2">

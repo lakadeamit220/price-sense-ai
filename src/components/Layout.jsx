@@ -87,7 +87,7 @@ export default function Layout({ children, onSelectProduct, selectedProductId, i
             <div>
               <h1 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 Price Sense
-                <span className="bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 text-transparent bg-clip-text">AI</span>
+                <span className="bg-gradient-to-r from-primary-600 to-primary-600 dark:from-primary-400 dark:to-primary-400 text-transparent bg-clip-text">AI</span>
               </h1>
               <p className="hidden sm:block text-xs text-slate-500 dark:text-slate-400 font-semibold tracking-wide uppercase mt-0.5">
                 Promotion Intelligence Engine

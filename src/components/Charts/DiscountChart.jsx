@@ -47,8 +47,9 @@ export default function DiscountChart({ data, isCompare, isDarkMode }) {
           <Bar dataKey="profit" radius={[6, 6, 0, 0]} maxBarSize={60}>
             {data.map((entry, index) => {
               let color = '#cbd5e1'; // default slate-300
-              if (entry.name.includes('Proposed') || entry.name.includes('A (')) color = '#2563eb'; // blue-600
-              if (entry.name.includes('B (')) color = '#4f46e5'; // indigo-600
+              if (entry.name.includes('Baseline')) color = '#94a3b8'; // slate-400
+              if (entry.name.includes('Proposed') || entry.name.includes('A (')) color = '#0ea5e9'; // primary-500
+              if (entry.name.includes('B (')) color = '#0284c7'; // primary-600
               
               return <Cell key={`cell-${index}`} fill={color} />;
             })}
