@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { getAllProducts } from '../data/catalog';
 import { Search } from 'lucide-react';
 
@@ -21,10 +22,29 @@ export default function InputForm({ selectedProductId, onProductSelect, onSimula
     onSimulate(prod, discount, duration);
   };
 
+  const formVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-7">
+    <motion.form 
+      variants={formVariants} 
+      initial="hidden" 
+      animate="show" 
+      onSubmit={handleSubmit} 
+      className="space-y-7"
+    >
       {/* Product Selection */}
-      <div className="space-y-2.5">
+      <motion.div variants={itemVariants} className="space-y-2.5">
         <label className="block text-sm font-bold text-slate-700">Target Product</label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -44,10 +64,10 @@ export default function InputForm({ selectedProductId, onProductSelect, onSimula
             ))}
           </select>
         </div>
-      </div>
+      </motion.div>
 
       {/* Discount Slider */}
-      <div className="space-y-3">
+      <motion.div variants={itemVariants} className="space-y-3">
         <div className="flex justify-between items-center">
           <label className="block text-sm font-bold text-slate-700">Discount Depth</label>
           <div className="relative w-24">
@@ -77,10 +97,10 @@ export default function InputForm({ selectedProductId, onProductSelect, onSimula
           <span>5%</span>
           <span>70%</span>
         </div>
-      </div>
+      </motion.div>
 
       {/* Duration */}
-      <div className="space-y-3">
+      <motion.div variants={itemVariants} className="space-y-3">
         <label className="block text-sm font-bold text-slate-700">Promotion Period</label>
         <div className="grid grid-cols-3 gap-3">
           {[3, 7, 14].map(days => (
@@ -98,9 +118,9 @@ export default function InputForm({ selectedProductId, onProductSelect, onSimula
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="pt-2">
+      <motion.div variants={itemVariants} className="pt-2">
         <button 
           type="submit" 
           disabled={!selectedProductId || isLoading}
@@ -122,7 +142,7 @@ export default function InputForm({ selectedProductId, onProductSelect, onSimula
             'Get AI Recommendation'
           )}
         </button>
-      </div>
-    </form>
+      </motion.div>
+    </motion.form>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { catalog } from '../data/catalog';
 import { ChevronDown, ChevronRight, Package, Tag, Coffee, ShoppingBag } from 'lucide-react';
 
@@ -19,6 +20,19 @@ export default function Sidebar({ onSelectProduct, selectedProductId }) {
     );
   };
 
+  const listVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -15 },
+    show: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
+
   return (
     <aside className="w-full bg-white border-r border-slate-200 h-full flex flex-col">
       <div className="p-5 border-b border-slate-200 bg-slate-50/50">
@@ -29,11 +43,16 @@ export default function Sidebar({ onSelectProduct, selectedProductId }) {
         <p className="text-xs text-slate-500 mt-1.5">Select an item to simulate promo</p>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-3">
+      <motion.div 
+        variants={listVariants}
+        initial="hidden"
+        animate="show"
+        className="flex-1 overflow-y-auto py-3"
+      >
         {catalog.map(category => {
           const isExpanded = expandedCategories.includes(category.id);
           return (
-            <div key={category.id} className="mb-2">
+            <motion.div variants={itemVariants} key={category.id} className="mb-2">
               <button 
                 onClick={() => toggleCategory(category.id)}
                 className="w-full flex items-center justify-between px-5 py-2 hover:bg-slate-50 text-slate-700 transition-colors focus:outline-none"
@@ -46,7 +65,11 @@ export default function Sidebar({ onSelectProduct, selectedProductId }) {
               </button>
               
               {isExpanded && (
-                <div className="mt-1 pb-2">
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mt-1 pb-2 overflow-hidden"
+                >
                   {category.products.map(product => {
                     const isSelected = selectedProductId === product.id;
                     return (
@@ -63,12 +86,12 @@ export default function Sidebar({ onSelectProduct, selectedProductId }) {
                       </button>
                     )
                   })}
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           )
         })}
-      </div>
+      </motion.div>
     </aside>
   );
 }
