@@ -45,10 +45,26 @@ export const calculateRecommendation = (product, discountPercentage, durationDay
 
   // Generate chart data comparing baseline, current requested promo, and nearby alternatives
   const chartData = [
-    { name: 'Baseline (0%)', profit: Math.round(baseProfit) },
-    { name: `${Math.max(5, discount - 5)}% Off`, profit: Math.round(baseProfit + calculateSimulatedProfit(product, Math.max(5, discount - 5), baseSalesVolume, unitCost, durationDays)) },
-    { name: `Proposed (${discount}%)`, profit: Math.round(promoProfit + cannibalizationImpact) },
-    { name: `${discount + 5}% Off`, profit: Math.round(baseProfit + calculateSimulatedProfit(product, discount + 5, baseSalesVolume, unitCost, durationDays)) },
+    { 
+      name: 'Baseline (0%)', 
+      profit: Math.round(baseProfit),
+      revenue: Math.round(baseRevenue)
+    },
+    { 
+      name: `${Math.max(5, discount - 5)}% Off`, 
+      profit: Math.round(baseProfit + calculateSimulatedProfit(product, Math.max(5, discount - 5), baseSalesVolume, unitCost, durationDays)),
+      revenue: calculateSimulatedRevenue(product, Math.max(5, discount - 5), baseSalesVolume)
+    },
+    { 
+      name: `Proposed (${discount}%)`, 
+      profit: Math.round(promoProfit + cannibalizationImpact),
+      revenue: Math.round(promoRevenue)
+    },
+    { 
+      name: `${discount + 5}% Off`, 
+      profit: Math.round(baseProfit + calculateSimulatedProfit(product, discount + 5, baseSalesVolume, unitCost, durationDays)),
+      revenue: calculateSimulatedRevenue(product, discount + 5, baseSalesVolume)
+    },
   ];
 
   return {
@@ -75,4 +91,11 @@ function calculateSimulatedProfit(product, discount, baseVol, cost, durationDays
    const bProf = baseVol * (product.basePrice - cost);
    const canni = -Math.round(Math.pow(discount / 10, 2) * 15 * (parseInt(durationDays, 10) / 7));
    return (pProf - bProf) + canni;
+}
+
+function calculateSimulatedRevenue(product, discount, baseVol) {
+   const mult = 1 + Math.pow(discount / 15, 1.5);
+   const pVol = Math.round(baseVol * mult);
+   const pPrice = product.basePrice * (1 - (discount / 100));
+   return Math.round(pVol * pPrice);
 }

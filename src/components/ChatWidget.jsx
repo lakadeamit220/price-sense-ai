@@ -51,11 +51,11 @@ export default function ChatWidget({ results }) {
       return `Based on historical elasticity for ${inputs.product.name}, a ${inputs.discount}% discount generates a ${metrics.liftPercentage}% lift in volume. This successfully offsets the margin compression.`;
     }
     if (lower.includes('risk') || lower.includes('danger') || lower.includes('cannibalization')) {
-      return `The primary risk is cannibalization ($${metrics.cannibalizationImpact}). Shoppers may trade down from premium SKUs to this discounted variant. I've factored this into the Net Profit calculation.`;
+      return `The primary risk is cannibalization (₹${metrics.cannibalizationImpact.toLocaleString()}). Shoppers may trade down from premium SKUs to this discounted variant. I've factored this into the Net Profit calculation.`;
     }
     if (lower.includes('better') || lower.includes('compare')) {
       if (activeResults.isCompare) {
-        return `Scenario A yields a net profit of $${activeResults.A.metrics.netIncrementalProfit.toLocaleString()}, while Scenario B yields $${activeResults.B.metrics.netIncrementalProfit.toLocaleString()}. I recommend the scenario with the higher net yield.`;
+        return `Scenario A yields a net profit of ₹${activeResults.A.metrics.netIncrementalProfit.toLocaleString()}, while Scenario B yields ₹${activeResults.B.metrics.netIncrementalProfit.toLocaleString()}. I recommend the scenario with the higher net yield.`;
       }
       return "You can use the 'Compare Scenario' toggle on the left to run an A/B test and I will evaluate both for you side-by-side!";
     }

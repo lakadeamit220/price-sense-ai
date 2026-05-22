@@ -18,7 +18,7 @@ export default function PromotionCalendar({ promotions }) {
     );
   }
 
-  const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+  const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
   
   // Format date natively
   const formatDate = (dateString) => {

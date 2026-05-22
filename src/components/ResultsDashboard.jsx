@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DiscountChart from './Charts/DiscountChart';
 import SupportingInsights from './SupportingInsights';
-import { TrendingUp, DollarSign, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown, Calendar as CalendarIcon } from 'lucide-react';
+import { TrendingUp, IndianRupee, Activity, AlertTriangle, ShieldCheck, PieChart, Info, Download, Crown, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function ResultsDashboard({ results, onExport, isDarkMode, onSavePromotion }) {
   if (!results) return null;
@@ -14,7 +14,7 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
   const secondaryData = isCompare ? results.B : null;
   const { recommendation, status, metrics, chartData, inputs } = mainData;
 
-  const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+  const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
   const statusStyles = {
     success: 'bg-gradient-to-r from-green-50 to-emerald-50/50 dark:from-green-500/10 dark:to-emerald-500/5 border-green-200/80 dark:border-green-500/20 text-green-900 dark:text-green-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]',
@@ -33,8 +33,8 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
     
     const headers = [
       "Scenario", "Product Name", "Category", "Discount (%)", "Duration (Days)", 
-      "AI Recommendation", "Net Incremental Profit ($)", "Projected Lift (%)", 
-      "Cannibalization Impact ($)", "Gross Incremental Revenue ($)", "Expected ROI (%)", "Confidence Score (%)"
+      "AI Recommendation", "Total Extra Profit (₹)", "Sales Boost (%)", 
+      "Lost Sales Elsewhere (₹)", "Total Extra Revenue (₹)", "Return on Investment (%)", "AI Certainty (%)"
     ];
     
     const makeRow = (name, d) => [
@@ -94,13 +94,24 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
     }
   };
 
-  // Build Compare Chart Data
   let finalChartData = chartData;
   if (isCompare) {
     finalChartData = [
-      { name: 'Baseline (0%)', profit: results.A.chartData[0].profit },
-      { name: `A (${results.A.inputs.discount}%)`, profit: results.A.chartData[2].profit },
-      { name: `B (${results.B.inputs.discount}%)`, profit: results.B.chartData[2].profit },
+      { 
+        name: 'Baseline (0%)', 
+        profit: results.A.chartData[0].profit,
+        revenue: results.A.chartData[0].revenue
+      },
+      { 
+        name: `A (${results.A.inputs.discount}%)`, 
+        profit: results.A.chartData[2].profit,
+        revenue: results.A.chartData[2].revenue
+      },
+      { 
+        name: `B (${results.B.inputs.discount}%)`, 
+        profit: results.B.chartData[2].profit,
+        revenue: results.B.chartData[2].revenue
+      },
     ];
   }
 
@@ -160,11 +171,8 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
           <div className="shrink-0 mt-1 sm:mt-0">
             <Crown className="w-8 h-8 text-primary-600 dark:text-primary-400" />
           </div>
-          <div>
-            <h3 className="font-bold text-lg sm:text-xl tracking-tight">A/B Test Result: {winnerText}</h3>
-            <p className="text-sm opacity-90 mt-1 font-medium leading-relaxed">
-              Compare the metrics below to understand the tradeoff between volume lift and margin compression.
-            </p>
+          <div className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+            Compare the numbers below to see if the extra sales make up for the lower price.
           </div>
         </motion.div>
       ) : (
@@ -173,29 +181,27 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
             {statusIcons[status]}
           </div>
           <div>
-            <h3 className="font-bold text-lg sm:text-xl tracking-tight">AI Recommendation: {recommendation}</h3>
-            <p className="text-sm opacity-90 mt-1 font-medium leading-relaxed">
-              Based on historical category elasticity, margin compression, and modeled cannibalization impact.
+            <h3 className="text-lg font-black mb-1 drop-shadow-sm">{recommendation}</h3>
+            <p className="text-sm font-semibold opacity-90 leading-relaxed">
+              Based on the numbers, this discount {status === 'success' ? 'will likely make you more money' : status === 'warning' ? 'might be risky due to lost sales elsewhere' : 'will likely lose you money'}.
             </p>
           </div>
         </motion.div>
       )}
 
-      {/* Key Metrics Grid */}
-      <motion.div variants={itemVariant} className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {/* Metrics Grid */}
+      <motion.div variants={itemVariant} className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mt-6 sm:mt-8">
         <MetricCard 
-          title="Net Incr. Profit" 
+          title="Total Extra Profit" 
           value={formatCurrency(metrics.netIncrementalProfit)} 
           trend={metrics.netIncrementalProfit > 0 ? 'up' : 'down'}
-          icon={<DollarSign className="w-4 h-4" />}
+          icon={<IndianRupee className="w-4 h-4" />}
           isCompare={isCompare}
           valueB={isCompare ? formatCurrency(results.B.metrics.netIncrementalProfit) : null}
           trendB={isCompare ? (results.B.metrics.netIncrementalProfit > 0 ? 'up' : 'down') : null}
-          labelA={`Scenario A`}
-          labelB={`Scenario B`}
         />
         <MetricCard 
-          title="Projected Lift" 
+          title="Sales Boost" 
           value={`+${metrics.liftPercentage}%`} 
           trend="up"
           icon={<TrendingUp className="w-4 h-4" />}
@@ -204,16 +210,16 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
           trendB="up"
         />
         <MetricCard 
-          title="Cannibalization" 
+          title="Lost Sales Elsewhere" 
           value={formatCurrency(metrics.cannibalizationImpact)} 
           trend="down"
-          icon={<PieChart className="w-4 h-4" />}
+          icon={<Activity className="w-4 h-4" />}
           isCompare={isCompare}
           valueB={isCompare ? formatCurrency(results.B.metrics.cannibalizationImpact) : null}
           trendB="down"
         />
         <MetricCard 
-          title="Gross Incr. Rev" 
+          title="Total Extra Revenue" 
           value={`+${formatCurrency(metrics.incrementalRevenue)}`} 
           trend="up"
           icon={<Activity className="w-4 h-4" />}
@@ -222,7 +228,7 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
           trendB="up"
         />
         <MetricCard 
-          title="Expected ROI" 
+          title="Return on Investment" 
           value={`${metrics.roi}%`} 
           trend={metrics.roi > 0 ? 'up' : 'down'}
           icon={<TrendingUp className="w-4 h-4" />}
@@ -231,20 +237,19 @@ export default function ResultsDashboard({ results, onExport, isDarkMode, onSave
           trendB={isCompare ? (results.B.metrics.roi > 0 ? 'up' : 'down') : null}
         />
         <MetricCard 
-          title="AI Confidence" 
+          title="AI Certainty" 
           value={`${metrics.confidenceScore}%`} 
-          trend={metrics.confidenceScore > 80 ? 'up' : 'neutral'}
+          trend="up"
           icon={<Info className="w-4 h-4" />}
           isCompare={isCompare}
           valueB={isCompare ? `${results.B.metrics.confidenceScore}%` : null}
-          trendB={isCompare ? (results.B.metrics.confidenceScore > 80 ? 'up' : 'neutral') : null}
+          trendB="up"
         />
       </motion.div>
 
-      {/* Chart Section */}
-      <motion.div variants={itemVariant} className="pt-6 border-t border-slate-200 dark:border-slate-700">
-        <h3 className="font-bold text-slate-800 dark:text-slate-100 tracking-tight">Profitability Scenario Analysis</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2 font-medium">Comparing baseline profit against the proposed discount scenarios.</p>
+      <motion.div variants={itemVariant} className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-800">
+        <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 mb-1">Profit Comparison Chart</h3>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4 sm:mb-6">Comparing normal profit against the discounted prices.</p>
         <DiscountChart data={finalChartData} isCompare={isCompare} isDarkMode={isDarkMode} />
       </motion.div>
 
@@ -277,14 +282,14 @@ function MetricCard({ title, value, icon, trend, isCompare, valueB, trendB, labe
       
       <div className="relative z-10">
         {isCompare ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-1 sm:gap-2">
             <div>
-              <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mb-1 uppercase tracking-wider">{labelA}</div>
-              <div className={`text-xl sm:text-2xl font-black tracking-tight ${getTrendColor(trend)} drop-shadow-sm`}>{value}</div>
+              <div className="text-[9px] text-slate-400 dark:text-slate-500 font-bold mb-0.5 uppercase tracking-wider leading-none">Scen. A</div>
+              <div className={`text-sm sm:text-base font-black tracking-tight ${getTrendColor(trend)} drop-shadow-sm break-words`}>{value}</div>
             </div>
-            <div className="border-l border-slate-100 dark:border-slate-700/50 pl-3">
-              <div className="text-[10px] text-primary-400 dark:text-primary-500 font-bold mb-1 uppercase tracking-wider">{labelB}</div>
-              <div className={`text-xl sm:text-2xl font-black tracking-tight ${getTrendColor(trendB)} drop-shadow-sm`}>{valueB}</div>
+            <div className="border-l border-slate-100 dark:border-slate-700/50 pl-1.5 sm:pl-2">
+              <div className="text-[9px] text-primary-400 dark:text-primary-500 font-bold mb-0.5 uppercase tracking-wider leading-none">Scen. B</div>
+              <div className={`text-sm sm:text-base font-black tracking-tight ${getTrendColor(trendB)} drop-shadow-sm break-words`}>{valueB}</div>
             </div>
           </div>
         ) : (
