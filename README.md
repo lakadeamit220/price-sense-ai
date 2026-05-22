@@ -1,87 +1,84 @@
-# Price Sense AI – Product Manager Case Study
+# Price Sense AI
 
-Welcome to my submission for the Price Sense AI Product Manager case study. This project demonstrates a functioning prototype of an AI-powered tool that helps retailers answer a critical business question: **"Should I run this promotion?"**
+Welcome to **Price Sense AI**! This is a smart, interactive dashboard designed to help retailers answer a very common business question: *"Should I run a promotion on this product, and if so, at what discount?"*
 
-## 1. Executive Summary
-Price Sense AI is designed to solve a critical problem for mid-market retailers: determining the true ROI and impact of product promotions. By transitioning from gut-feel decisions to AI-driven elasticity and cannibalization modeling, retailers can optimize their margins while maximizing category growth. This prototype demonstrates a horizontal, scalable recommendation engine that works seamlessly across diverse product categories like specialty nuts, beverages, and general grocery.
-
-## 2. Prototype Overview
-The application features a dynamic, responsive user interface simulating an AI recommendation engine. 
-
-**Tech Stack**: 
-- **Frontend**: React.js (Vite)
-- **Styling**: Tailwind CSS v4
-- **Animations & Charts**: Framer Motion & Recharts
-- **Icons**: Lucide React
-
-- **Interactive UI**: A single-page application allowing users to input promotion variables (product, discount, timing).
-- **Simulated Intelligence**: A mock data engine (`mockEngine.js`) simulates the underlying ML model, applying non-linear elasticity multipliers and cannibalization factors to generate realistic business metrics.
-
-## 3. Key Features & Prioritization
-When designing the POC, I prioritized features that directly answer the retailer's core questions ("Was 25% off better than 20%? What was the actual incremental profit?"):
-1. **Dynamic Input Form**: Essential for testing different variables. Built with standard HTML inputs and synchronized sliders for immediate visual feedback.
-2. **Clear Recommendation Banner**: The ultimate output of the product. It gives an immediate, actionable answer ("Strongly Recommend", "Proceed with Caution", or "Do Not Run").
-3. **Comprehensive Metrics Grid**: Translates raw data into business value (Incremental Revenue, Profit, ROI, Cannibalization).
-4. **Baseline vs. Promo Chart**: A visual representation built with Recharts to show the direct impact of the promotion against the baseline.
-5. **Alternative Scenarios**: A comparative table allowing users to see if a slightly lower or higher discount would yield better results.
+Instead of relying on guesswork, this app simulates an Artificial Intelligence that predicts how a discount will affect sales volume, profit margins, and cannibalization (when a cheaper product steals sales from a more expensive one).
 
 ---
 
-## 4. Installation & Setup Guide
-
-Follow these steps to run the prototype locally.
+## 🚀 How to Run the App
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/en/) (v18 or higher)
+- You need [Node.js](https://nodejs.org/en/) installed on your computer.
 
 ### Setup Instructions
-1. **Clone the repository**
-```bash
-git clone https://github.com/lakadeamit220/price-sense-ai.git
-cd price-sense-ai
-```
-
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Start the Development Server**
-```bash
-npm run dev
-```
-*The application will now be running at `http://localhost:5173`.*
+1. **Open your terminal** and clone the repository:
+   ```bash
+   git clone https://github.com/lakadeamit220/price-sense-ai.git
+   cd price-sense-ai
+   ```
+2. **Install the required packages**:
+   ```bash
+   npm install
+   ```
+3. **Start the application**:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser and go to `http://localhost:5173`.
 
 ---
 
-## 5. Development Process
-I partnered with an AI coding assistant to rapidly prototype the application. 
-- **Ideation & Planning**: Outlined the core architecture and mock logic.
-- **UI/UX Design**: Chose Tailwind CSS for rapid, modern styling. Implemented a clean SaaS aesthetic with a Sidebar catalog for quick testing.
-- **Implementation**: Structured the React application into focused components (`InputForm`, `ResultsDashboard`, `SupportingInsights`). Used `framer-motion` to add micro-interactions and loading states that simulate the "AI thinking" process, enhancing the user experience.
+## 🧪 Step-by-Step Guide to Test Every Feature
 
-## 6. Technical Architecture
-**Current Architecture (POC):**
-- **Frontend**: React (Vite) single-page application.
-- **State Management**: React `useState` for local form and result state.
-- **Logic**: Mock data engine simulating ML responses natively in the browser.
+Follow these simple steps to experience everything the app has to offer:
 
-**Future Architecture (At Scale):**
-- **Frontend**: Next.js for better routing and performance.
-- **Backend API**: Node.js/Express or Python/FastAPI microservices.
-- **Database**: PostgreSQL for storing product catalogs, historical promotion data, and user configurations.
-- **Machine Learning Layer**: Python-based models (e.g., XGBoost, Random Forest) trained on historical Point-of-Sale (POS) data to accurately predict elasticity and cannibalization.
-- **Authentication/Multi-tenancy**: Implementing standard Auth (e.g., Auth0 or Firebase) to support multiple retail organizations securely.
+### 1. Run a Standard AI Simulation
+- Look at the **Sidebar** on the left and click on a product (e.g., "Premium Almonds").
+- In the **Simulation Inputs** box on the left, set a **Discount Depth** (e.g., 20%) using the slider or input box.
+- Set a **Promotion Duration** (e.g., 7 days).
+- Click the **"Run AI Simulation"** button.
+- *Notice the "AI thinking" loading animation, followed by a dashboard showing a clear recommendation (e.g., Strongly Recommend), projected profit, and a visual bar chart.*
 
-## 7. Challenges Faced
-- **Simulating Realistic Data**: Creating a mock engine that generates believable numbers was challenging. I had to build simple non-linear elasticity logic to ensure that an extreme discount (e.g., 60%) would correctly show negative incremental profit due to margin compression, despite high volume.
-- **UI Density**: Balancing a lot of data (metrics, charts, tables) on a single screen without overwhelming the user. I solved this by using clear visual hierarchy, whitespace, and icon-based metric cards.
+### 2. Try the A/B Testing (Compare Mode)
+- In the Simulation Inputs box, flip the **"Compare Scenario"** toggle switch so it turns purple.
+- You will now see two discount sliders. Set **Scenario A to 20%** and **Scenario B to 40%**.
+- Click **"Run AI Simulation"**.
+- *Notice how the dashboard transforms! It now shows a side-by-side comparison of both scenarios, declares a mathematical winner at the top, and plots both on the chart.*
 
-## 8. Future Roadmap (Given More Time)
-1. **Real Data Integration**: Connect the app to a real POS database or sample dataset to run actual regression models.
-2. **"Ask AI" Chat Interface**: Add an LLM-powered chat window allowing users to ask natural language questions about the recommendation (e.g., "Why is cannibalization so high for this product?").
-3. **Promotion Calendar**: A view to schedule and visualize upcoming promotions, ensuring overlapping discounts don't conflict.
-4. **Post-Promo Analysis**: A module to ingest actual sales data after a promotion ends, comparing it against the AI's prediction to build trust and refine the model.
+### 3. Schedule a Promotion (Promo Calendar)
+- Once your simulation is finished, look for the purple **"Schedule"** button in the top right corner of the dashboard.
+- Click **Schedule**.
+- *Notice the green success notification dropping down from the top of the screen.*
+- The app will automatically switch you from the "AI Simulator" tab to the **"Promo Calendar"** tab, where your promotion is now permanently saved on a timeline!
+- You can toggle back and forth between the Simulator and Calendar tabs at the top center of the screen.
 
-## 9. Final Thoughts
-This prototype successfully proves the concept of Price Sense AI. It takes a complex, data-heavy decision and distills it into an intuitive, visually appealing, and highly actionable user interface.
+### 4. Ask the AI a Question
+- Look in the **bottom right corner** of the screen for a floating purple chat bubble.
+- Click it to open the **Ask Price Sense AI** widget.
+- Type a question like: *"Why is this risky?"* or *"Compare these for me."*
+- Click send. *Notice the realistic typing animation before the AI responds using the exact math from your current active simulation!*
+
+### 5. Export to CSV
+- Go back to the **AI Simulator** tab.
+- Click the **"Export"** button in the top right of the dashboard.
+- *Notice a CSV file is downloaded to your computer containing the exact data from your simulation, which you can open in Excel.*
+
+### 6. Test the Notification History
+- Look at the very top right of the navigation bar. You should see a **Bell icon** with a red dot.
+- Click the Bell icon.
+- *A beautiful dropdown will appear showing a history of all the notifications you triggered (like exporting or scheduling), complete with timestamps. Click "Clear All" to wipe them.*
+
+### 7. Toggle Dark Mode
+- Next to the notification bell in the top navigation bar, click the **Moon icon**.
+- *Watch the entire application instantly and smoothly transition into a beautiful, premium Dark Mode.*
+- Click the Sun icon to switch back to Light Mode.
+
+---
+
+## 🛠 Tech Stack
+- **Frontend Framework**: React.js (Vite)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Charts**: Recharts
+- **Icons**: Lucide React
