@@ -24,15 +24,34 @@ export default function ResultsDashboard({ results }) {
     danger: <AlertTriangle className="w-8 h-8 text-red-600" />
   };
 
+  // Animation variants
+  const containerVariant = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+    }
+  };
+
+  const itemVariant = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1, 
+      transition: { type: 'spring', stiffness: 250, damping: 20 } 
+    }
+  };
+
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={containerVariant}
+      initial="hidden"
+      animate="show"
       className="space-y-6"
     >
       {/* Recommendation Banner */}
-      <div className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
+      <motion.div variants={itemVariant} className={`p-5 rounded-2xl border flex items-start sm:items-center gap-4 ${statusStyles[status]}`}>
         <div className="shrink-0 mt-1 sm:mt-0">
           {statusIcons[status]}
         </div>
@@ -42,10 +61,10 @@ export default function ResultsDashboard({ results }) {
             Based on historical category elasticity, margin compression, and modeled cannibalization impact.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <motion.div variants={itemVariant} className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <MetricCard 
           title="Net Incr. Profit" 
           value={formatCurrency(metrics.netIncrementalProfit)} 
@@ -88,17 +107,19 @@ export default function ResultsDashboard({ results }) {
           icon={<Info className="w-4 h-4" />}
           trend={metrics.confidenceScore > 80 ? 'up' : 'neutral'}
         />
-      </div>
+      </motion.div>
 
       {/* Chart Section */}
-      <div className="pt-6 border-t border-slate-200">
+      <motion.div variants={itemVariant} className="pt-6 border-t border-slate-200">
         <h3 className="font-bold text-slate-800 tracking-tight">Profitability Scenario Analysis</h3>
         <p className="text-sm text-slate-500 mb-2 font-medium">Comparing baseline profit against the proposed discount and adjacent alternatives.</p>
         <DiscountChart data={chartData} />
-      </div>
+      </motion.div>
 
       {/* Supporting Insights */}
-      <SupportingInsights results={results} />
+      <motion.div variants={itemVariant}>
+        <SupportingInsights results={results} />
+      </motion.div>
     </motion.div>
   );
 }
@@ -107,7 +128,10 @@ function MetricCard({ title, value, subtitle, icon, trend }) {
   const trendColor = trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-500' : 'text-slate-600';
   
   return (
-    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+    <motion.div 
+      whileHover={{ y: -4, boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)' }}
+      className="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm transition-colors duration-300"
+    >
       <div className="flex items-center gap-2 text-slate-500 mb-3">
         {icon}
         <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
@@ -118,6 +142,6 @@ function MetricCard({ title, value, subtitle, icon, trend }) {
       <div className="text-xs font-medium text-slate-500 mt-1">
         {subtitle}
       </div>
-    </div>
+    </motion.div>
   );
 }
